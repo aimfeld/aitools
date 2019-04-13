@@ -11,7 +11,7 @@ from .roc import plot_roc_cv
 def classify(classifier_label: str, classifier, 
                      X: pd.DataFrame, y: pd.Series, 
                      categorical_features: list, numeric_features: list,
-                     test_size: int = 0.2) -> list:
+                     test_size: int = 0.3) -> list:
     """
     Run a binary classifier given a list of numeric and categorical features.
     Plots a kfold cross-validation ROC curve and prints a classification report.
