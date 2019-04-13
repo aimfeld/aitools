@@ -9,7 +9,8 @@ def facet_numeric(df: pd.DataFrame, numeric_features: list, target: str):
     """
     df_tidy = df[numeric_features + [target]].melt(id_vars=target)
     g = sns.FacetGrid(df_tidy, col='variable', hue=target, col_wrap=4, sharex=False, sharey=False)
-    g = g.map(sns.distplot, 'value', kde=False)
+    g = g.map(sns.distplot, 'value', kde=False).add_legend()
+    
     
 def facet_categorical(df: pd.DataFrame, categorical_features: list, target: str, n_largest=10):
     """
