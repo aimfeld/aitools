@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='aitools-aimfeld',
-    version='0.1',
+    version='0.2',
     description='Python tools for datascience and AI',
     url='https://github.com/aimfeld/aitools',
     author='Adrian Imfeld',
