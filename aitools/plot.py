@@ -12,9 +12,9 @@ def facet_numeric(df: pd.DataFrame, numeric_features: list, target: str):
     df : pd.DataFrame
         A dataframe containing numeric features and the binary target variable.
     numeric_features : list of str
-        The column names of numeric features in df
+        The column names of numeric features in df.
     target: str
-        The column name of the target variable in df
+        The column name of the target variable in df.
     """
     df_tidy = df[numeric_features + [target]].melt(id_vars=target)
     g = sns.FacetGrid(df_tidy, col='variable', hue=target, col_wrap=4, sharex=False, sharey=False)
@@ -30,9 +30,9 @@ def facet_categorical(df: pd.DataFrame, categorical_features: list, target: str,
     df : pd.DataFrame
         A dataframe containing numeric features and the binary target variable.
     categorical_features : list of str
-        The column names of categorical features in df
+        The column names of categorical features in df.
     target: str
-        The column name of the target variable in df
+        The column name of the target variable in df.
     n_largest: str
         Show only the n largest categories and bin the others into an 'other' category to reduce chart height.
     """

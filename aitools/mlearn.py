@@ -30,7 +30,7 @@ def classify(classifier_label: str, classifier,
         The column names of categorical features in X
     numeric_features : list of str
         The column names of numeric features in X
-    test_size : int, default=0.2
+    test_size : int, default=0.3
         The size of the holdout test dataset for evaluating the model.
     
     Returns
@@ -44,7 +44,6 @@ def classify(classifier_label: str, classifier,
     # We create the preprocessing pipelines for both numeric and categorical data.
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
-        #('scaler', StandardScaler())])
         ('scaler', MinMaxScaler())])
 
     categorical_transformer = Pipeline(steps=[
@@ -65,11 +64,11 @@ def classify(classifier_label: str, classifier,
     if y.dtype == 'O':
         y = y.astype('category').cat.codes
     
+    # Plot ROC cross validation curves
+    plot_roc_cv(classifier_label, model, X, y)
+    
     # Create training and test sets
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=test_size, random_state=42)
-    
-    # Plot ROC cross validation curves
-    plot_roc_cv(classifier_label, model, X_train, y_train)
     
     # Fit the pipeline to the train set
     model.fit(X_train, y_train)
