@@ -1,6 +1,9 @@
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# PyCharm project
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

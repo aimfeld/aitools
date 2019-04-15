@@ -11,7 +11,7 @@ from .features import *
 
 def classify(classifier_label: str, classifier,
              X: pd.DataFrame, y: pd.Series,
-             test_size: int = 0.3) -> list:
+             plot_roc_cv: bool = True, test_size: int = 0.3) -> list:
     """
     Run a binary classifier given a list of numeric and categorical features.
     Plots a kfold cross-validation ROC curve and prints a classification report.
@@ -26,7 +26,9 @@ def classify(classifier_label: str, classifier,
         A dataframe containing feature columns.
     y : pd.Series of int, bool, or str
         A series containing the binary classification labels.
-    test_size : int, default=0.3
+    plot_roc_cv : bool, default = True
+        Plot cross-validated ROC.
+    test_size : int, default = 0.3
         The size of the holdout test dataset for evaluating the model.
     
     Returns
@@ -64,7 +66,8 @@ def classify(classifier_label: str, classifier,
         y = y.astype('category').cat.codes
 
     # Plot ROC cross validation curves
-    roc_cv(classifier_label, model, X, y)
+    if plot_roc_cv:
+        roc_cv(classifier_label, model, X, y)
 
     # Create training and test sets
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=test_size, random_state=42)
