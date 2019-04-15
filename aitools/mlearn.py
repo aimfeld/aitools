@@ -11,6 +11,7 @@ from .features import *
 
 def classify(classifier_label: str, classifier,
              X: pd.DataFrame, y: pd.Series,
+             scaler=MinMaxScaler(),
              plot_roc_cv: bool = True, test_size: int = 0.3) -> list:
     """
     Run a binary classifier given a list of numeric and categorical features.
@@ -26,6 +27,8 @@ def classify(classifier_label: str, classifier,
         A dataframe containing feature columns.
     y : pd.Series of int, bool, or str
         A series containing the binary classification labels.
+    scaler : default = MinMaxScaler
+        Scaler which is applied to numeric features.
     plot_roc_cv : bool, default = True
         Plot cross-validated ROC.
     test_size : int, default = 0.3
@@ -45,7 +48,7 @@ def classify(classifier_label: str, classifier,
     # We create the preprocessing pipelines for both numeric and categorical data.
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
-        ('scaler', MinMaxScaler())])
+        ('scaler', scaler)])
 
     categorical_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
@@ -83,6 +86,6 @@ def classify(classifier_label: str, classifier,
 
     # Compute metrics
     print('\n%s: Holdout classification report:\n' % classifier_label,
-          classification_report(y_holdout, y_pred))
+          classification_report(y_holdout, y_pred, digits=3))
 
     return [model, AUC_holdout_score]
