@@ -11,7 +11,10 @@ from .features import *
 
 def classify(classifier_label: str, classifier,
              X: pd.DataFrame, y: pd.Series,
-             scaler=MinMaxScaler(),
+             num_imputer=SimpleImputer(strategy='median'),
+             cat_imputer=SimpleImputer(strategy='constant', fill_value='missing'),
+             num_scaler=MinMaxScaler(),
+             cat_encoder=OneHotEncoder(handle_unknown='ignore', sparse=False),
              plot_roc_cv: bool = True, test_size: int = 0.3) -> list:
     """
     Run a binary classifier given a list of numeric and categorical features.
@@ -27,8 +30,14 @@ def classify(classifier_label: str, classifier,
         A dataframe containing feature columns.
     y : pd.Series of int, bool, or str
         A series containing the binary classification labels.
-    scaler : default = MinMaxScaler
+    num_imputer : default = SimpleImputer(strategy='median')
+        Imputer for numeric features.
+    cat_imputer : default = SimpleImputer(strategy='constant', fill_value='missing')
+        Imputer for categorical features.
+    num_scaler : default = MinMaxScaler
         Scaler which is applied to numeric features.
+    cat_encoder : default = OneHotEncoder(handle_unknown='ignore', sparse=False)
+        Label encoder for categorical featuers.
     plot_roc_cv : bool, default = True
         Plot cross-validated ROC.
     test_size : int, default = 0.3
@@ -47,12 +56,12 @@ def classify(classifier_label: str, classifier,
 
     # We create the preprocessing pipelines for both numeric and categorical data.
     numeric_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='median')),
-        ('scaler', scaler)])
+        ('imputer', num_imputer),
+        ('scaler', num_scaler)])
 
     categorical_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
-        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))])
+        ('imputer', cat_imputer),
+        ('encoder', cat_encoder)])
 
     preprocessor = ColumnTransformer(
         transformers=[
