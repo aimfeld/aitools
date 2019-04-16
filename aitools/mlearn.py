@@ -46,10 +46,11 @@ def classify(classifier_label: str, classifier,
     
     Returns
     -------
-    pipeline, auc_holdout, auc_cv : list
+    pipeline, auc_holdout, auc_cv, auc_std : list
         pipeline: the fitted pipeline
         auc_holdout: the AUC score for the holdout test
-        auc_cv: The mean AUC from cross validation (np.nan if plot_roc_cv=False)
+        auc_cv: The AUC mean from cross validation (np.nan if plot_roc_cv=False)
+        auc_std: The AUC standard deviation from cross validation (np.nan if plot_roc_cv=False)
 
     Example
     -------
@@ -82,9 +83,9 @@ def classify(classifier_label: str, classifier,
         y = y.astype('category').cat.codes
 
     # Plot ROC cross validation curves
-    auc_cv = np.nan
+    auc_cv, auc_std = np.nan, np.nan
     if plot_roc_cv:
-        auc_cv = roc_cv(classifier_label, pipeline, X, y)
+        auc_cv, auc_std = roc_cv(classifier_label, pipeline, X, y)
 
     # Create training and test sets
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=test_size, random_state=42)
@@ -102,4 +103,4 @@ def classify(classifier_label: str, classifier,
     print('\n%s: Holdout classification report:\n' % classifier_label,
           classification_report(y_holdout, y_pred, digits=3))
 
-    return [pipeline, auc_holdout, auc_cv]
+    return [pipeline, auc_holdout, auc_cv, auc_std]
