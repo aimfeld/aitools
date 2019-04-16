@@ -28,11 +28,15 @@ def roc(model, X_test, y_test):
     plt.show()
 
 
-def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5):
+def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5) -> np.float:
     """
     Plot ROC curve with cross-validation.
 
     Adapted from https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc_crossval.html
+
+    Returns
+    -------
+    Mean cross validtion AUC
     """
     cv = StratifiedKFold(n_splits=n_splits, random_state=42)
 
@@ -64,7 +68,7 @@ def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5):
     mean_auc = auc(mean_fpr, mean_tpr)
     std_auc = np.std(aucs)
     plt.plot(mean_fpr, mean_tpr, color='b',
-             label=r'Mean ROC (AUC = %0.2f $\pm$ %0.2f)' % (mean_auc, std_auc),
+             label=r'Mean ROC (AUC = %0.3f $\pm$ %0.2f)' % (mean_auc, std_auc),
              lw=2, alpha=.8)
 
     std_tpr = np.std(tprs, axis=0)
@@ -80,6 +84,8 @@ def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5):
     plt.title('ROC: {}'.format(title))
     plt.legend(loc="lower right")
     plt.show()
+
+    return mean_auc
 
 
 def numeric_vs_target(df: pd.DataFrame, target: str):
