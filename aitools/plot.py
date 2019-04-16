@@ -34,7 +34,7 @@ def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5):
 
     Adapted from https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc_crossval.html
     """
-    cv = StratifiedKFold(n_splits=n_splits)
+    cv = StratifiedKFold(n_splits=n_splits, random_state=42)
 
     tprs = []
     aucs = []
