@@ -79,6 +79,11 @@ def create_pipeline(
             ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
             ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False))]
         )
+
+    Returns
+    -------
+    pipeline : Pipeline
+        A pipeline containing the preprocessing and classification steps.
     """
     transformers = []
 
