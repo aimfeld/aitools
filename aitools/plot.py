@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy import interp
+from sklearn.pipeline import Pipeline
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from .features import *
@@ -28,7 +29,7 @@ def roc(model, X_test, y_test):
     plt.show()
 
 
-def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5) -> list:
+def roc_cv(title: str, pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, n_splits=5) -> list:
     """
     Plot ROC curve with cross-validation.
 
@@ -41,6 +42,9 @@ def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5) -> list
         auc_cv: The AUC mean from cross validation
         auc_std: The AUC standard deviation from cross validation
     """
+    if y.dtype == 'O':
+        y = y.astype('category').cat.codes
+
     cv = StratifiedKFold(n_splits=n_splits, random_state=42)
 
     tprs = []
@@ -51,7 +55,7 @@ def roc_cv(title: str, model, X: pd.DataFrame, y: pd.Series, n_splits=5) -> list
 
     i = 0
     for train, test in cv.split(X, y):
-        probas_ = model.fit(X.iloc[train], y.iloc[train]).predict_proba(X.iloc[test])
+        probas_ = pipeline.fit(X.iloc[train], y.iloc[train]).predict_proba(X.iloc[test])
         # Compute ROC curve and area the curve
         fpr, tpr, thresholds = roc_curve(y.iloc[test], probas_[:, 1])
         tprs.append(interp(mean_fpr, fpr, tpr))
