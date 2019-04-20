@@ -35,6 +35,19 @@ def roc_cv(title: str, pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, n_spli
 
     Adapted from https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc_crossval.html
 
+    Parameters
+    ----------
+    title: str
+        The title of the ROC plot.
+    pipeline : Pipeline
+        A classification pipeline, see create_pipeline().
+    X : pd.DataFrame
+        A dataframe containing feature columns.
+    y : pd.Series of int, bool, str, or categorical
+        A series containing the binary classification labels.
+    n_splits : int, default = 5
+        Number of cross-validation splits.
+
     Returns
     -------
     Mean cross validtion AUC
@@ -42,8 +55,8 @@ def roc_cv(title: str, pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, n_spli
         auc_cv: The AUC mean from cross validation
         auc_std: The AUC standard deviation from cross validation
     """
-    if y.dtype == 'O':
-        y = y.astype('category').cat.codes
+    # Make sure it works with numerical, categorical, and string labels
+    y = y.astype('category').cat.codes
 
     cv = StratifiedKFold(n_splits=n_splits, random_state=42)
 

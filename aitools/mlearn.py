@@ -19,7 +19,7 @@ def classify(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int =
         A classification pipeline, see create_pipeline().
     X : pd.DataFrame
         A dataframe containing feature columns.
-    y : pd.Series of int, bool, or str
+    y : pd.Series of int, bool, str, or categorical
         A series containing the binary classification labels.
     test_size : int, default = 0.3
         The size of the holdout test dataset for evaluating the model.
@@ -29,9 +29,8 @@ def classify(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int =
     auc_holdout : float
         The AUC score for the holdout test
     """
-    # If y-labels are given as strings, recode them into int
-    if y.dtype == 'O':
-        y = y.astype('category').cat.codes
+    # Make sure it works with numerical, categorical, and string labels
+    y = y.astype('category').cat.codes
 
     # Create training and test sets
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=test_size, random_state=42)
