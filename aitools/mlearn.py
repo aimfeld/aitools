@@ -8,7 +8,9 @@ from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 from .features import *
 
 
-def classify(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int = 0.3) -> float:
+def classify(
+    pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int = 0.3
+) -> float:
     """
     Run a binary classifier given a list of numeric and categorical features.
     Plots a kfold cross-validation ROC curve and prints a classification report.
@@ -30,10 +32,12 @@ def classify(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int =
         The AUC score for the holdout test
     """
     # Make sure it works with numerical, categorical, and string labels
-    y = y.astype('category').cat.codes
+    y = y.astype("category").cat.codes
 
     # Create training and test sets
-    X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=test_size, random_state=42)
+    X_train, X_holdout, y_train, y_holdout = train_test_split(
+        X, y, test_size=test_size, random_state=42
+    )
 
     # Fit the pipeline to the train set
     pipeline.fit(X_train, y_train)
@@ -45,7 +49,10 @@ def classify(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int =
     y_pred = pipeline.predict(X_holdout)
 
     # Compute metrics
-    print('\nHoldout classification report:\n', classification_report(y_holdout, y_pred, digits=3))
+    print(
+        "\nHoldout classification report:\n",
+        classification_report(y_holdout, y_pred, digits=3),
+    )
 
     return auc_holdout
 
@@ -53,14 +60,19 @@ def classify(pipeline: Pipeline, X: pd.DataFrame, y: pd.Series, test_size: int =
 def create_pipeline(
     classifier,
     X: pd.DataFrame,
-    numeric_prepro: Pipeline = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='median')),
-        ('encoder', MinMaxScaler())]
+    numeric_prepro: Pipeline = Pipeline(
+        steps=[
+            ("imputer", SimpleImputer(strategy="median")),
+            ("encoder", MinMaxScaler()),
+        ]
     ),
-    categorical_prepro: Pipeline = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
-        ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False))]
-    )) -> Pipeline:
+    categorical_prepro: Pipeline = Pipeline(
+        steps=[
+            ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
+            ("encoder", OneHotEncoder(handle_unknown="ignore", sparse=False)),
+        ]
+    ),
+) -> Pipeline:
     """
     Creates a classifier pipeline with separate preprocessing for categorical and numeric features.
 
@@ -87,12 +99,17 @@ def create_pipeline(
     transformers = []
 
     numeric_features = get_numeric_features(X)
-    transformers.append(('numeric_prepro', numeric_prepro, numeric_features))
+    transformers.append(("numeric_prepro", numeric_prepro, numeric_features))
 
     categorical_features = get_categorical_features(X)
-    transformers.append(('categorical_prepro', categorical_prepro, categorical_features))
+    transformers.append(
+        ("categorical_prepro", categorical_prepro, categorical_features)
+    )
 
-    steps = [('preprocessor', ColumnTransformer(transformers=transformers)), ('classifier', classifier)]
+    steps = [
+        ("preprocessor", ColumnTransformer(transformers=transformers)),
+        ("classifier", classifier),
+    ]
     pipeline = Pipeline(steps)
 
     return pipeline
